@@ -47,7 +47,7 @@
 .lista{
     list-style:none;
     display: grid;
-    grid-template-columns: 30% 30% 30%;
+    grid-template-columns: 25% 25% 25% 25%;
     align-items: center;
     justify-content: center;
     width: 100%;
