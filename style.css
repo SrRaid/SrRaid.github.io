@@ -48,6 +48,7 @@
     list-style:none;
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
+    grid-auto-rows: 5%;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -57,9 +58,11 @@
     text-decoration: none;
     text-align: center;
     text-transform: capitalize;
-    height: fit-content;
     color:rgb(29, 153, 126);
-    padding: 5%;
+    height: 100%;
     border: #c3c3c3 solid 2px;
     font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
