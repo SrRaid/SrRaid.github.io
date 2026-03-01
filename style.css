@@ -1,221 +1,79 @@
-/* --- IMPORTACIÓN DE FUENTE --- */
-@font-face {
-    font-family: 'minecraft';
-    src: url('minecraft_font.otf');
+/* --- CONFIGURACIÓN DE PROTOCOLOS --- */
+const statusNames = {
+    red: "SISTEMA CRÍTICO",
+    blue: "PROTOCOLO GHOST",
+    green: "INFILTRACIÓN",
+    purple: "SOBRECARGA NEÓN",
+    gray: "MODO SIGILO",
+    orange: "ALERTA NARANJA",
+    cyan: "NÚCLEO FRÍO",
+    pink: "FRECUENCIA VULCANO"
+};
+
+/* --- CAMBIADOR DE TEMAS TOTAL --- */
+function setTheme(color) {
+    // Aplicar el atributo al body (el CSS hará el resto)
+    document.body.setAttribute('data-theme', color);
+    
+    // Guardar preferencia en el navegador
+    localStorage.setItem('raid-ghost-theme', color);
+    
+    // Actualizar el texto de estado en el Header
+    const statusText = document.getElementById('status-name');
+    if (statusText) {
+        statusText.innerText = statusNames[color] || "ACTIVO";
+        statusText.style.color = "var(--primary)";
+    }
+
+    // Log de consola con estilo
+    console.log(`%c [!] PROTOCOLO ${color.toUpperCase()} INICIADO `, `background: #222; color: ${getColorHex(color)}; font-weight: bold;`);
 }
 
-:root {
-    /* Tema Rojo (Default / Sistema Crítico) */
-    --primary: #ff0000;
-    --dark-color: #440000;   
-    --glitch-1: rgba(0, 255, 255, 0.3);
-    --glitch-2: rgba(255, 0, 0, 0.3);
-    --bg-black: #000000;       
-    --interface-gray: #0a0a0a; 
-    --text-main: #e0e0e0;     
-    --font-family: 'minecraft', monospace;
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+// Función auxiliar para los logs de consola
+function getColorHex(color) {
+    const colors = { red: '#ff0000', blue: '#0088ff', green: '#00ff44', purple: '#bc13fe', orange: '#ff8800', cyan: '#00ffff', pink: '#ff00ff' };
+    return colors[color] || '#fff';
 }
 
-/* --- VARIACIONES DE TEMA TOTAL (NUEVOS COLORES) --- */
-body[data-theme="blue"]   { --primary: #0088ff; --dark-color: #002244; }
-body[data-theme="green"]  { --primary: #00ff44; --dark-color: #004411; }
-body[data-theme="purple"] { --primary: #bc13fe; --dark-color: #3a0055; }
-body[data-theme="gray"]   { --primary: #ffffff; --dark-color: #333333; }
-body[data-theme="orange"] { --primary: #ff8800; --dark-color: #442200; }
-body[data-theme="cyan"]   { --primary: #00ffff; --dark-color: #004444; }
-body[data-theme="pink"]   { --primary: #ff00ff; --dark-color: #440044; }
+/* --- MOTOR DE BÚSQUEDA GHOST --- */
+const buscador = document.getElementById('buscador');
+const links = document.querySelectorAll('.lista a');
+const counter = document.getElementById('count'); // Asegúrate de tener <span id="count"></span> en tu HTML
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    outline: none;
+if (buscador) {
+    buscador.addEventListener('input', () => {
+        const term = buscador.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        links.forEach(link => {
+            const text = link.innerText.toLowerCase();
+            if (text.includes(term)) {
+                link.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                link.classList.add('hidden');
+            }
+        });
+
+        // Actualizar contador si existe
+        if (counter) counter.innerText = visibleCount;
+    });
 }
 
-/* --- EFECTOS DE PANTALLA CRT --- */
-body {
-    background-color: var(--bg-black);
-    color: var(--text-main);
-    font-family: var(--font-family);
-    overflow: hidden; 
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    transition: background 0.5s ease;
-}
+/* --- CARGA INICIAL (PERSISTENCIA) --- */
+window.onload = () => {
+    // Recuperar el último tema usado o poner Rojo por defecto
+    const savedTheme = localStorage.getItem('raid-ghost-theme') || 'red';
+    setTheme(savedTheme);
+    
+    // Si tienes un contador inicial, esto lo actualiza
+    if (counter) counter.innerText = links.length;
+};
 
-.overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-    background-size: 100% 3px, 3px 100%;
-    z-index: 999;
-    pointer-events: none;
-}
-
-.scanline {
-    width: 100%; height: 4px;
-    background: var(--primary);
-    opacity: 0.15;
-    position: fixed;
-    left: 0; top: -100%;
-    z-index: 1000;
-    animation: scanline 8s linear infinite;
-    pointer-events: none;
-}
-
-.main-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    z-index: 10;
-}
-
-/* --- HEADER Y CONTROLES --- */
-.header-section {
-    padding: 40px 20px;
-    text-align: center;
-    border-bottom: 3px double var(--primary);
-    background: linear-gradient(180deg, #080808 0%, #000 100%);
-    box-shadow: 0 0 20px var(--dark-color);
-}
-
-.raid {
-    font-size: 4.5rem;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 8px;
-    text-shadow: 0 0 15px var(--primary), 3px 3px 0px var(--dark-color);
-    margin-bottom: 10px;
-}
-.raid span { color: var(--primary); }
-
-.controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    margin-top: 25px;
-}
-
-#buscador {
-    background: #000;
-    border: 2px solid var(--dark-color);
-    color: var(--primary);
-    padding: 15px 25px;
-    font-family: var(--font-family);
-    width: 450px;
-    font-size: 1.2rem;
-    text-align: center;
-    transition: var(--transition);
-    box-shadow: inset 0 0 10px var(--dark-color);
-}
-
-#buscador:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 20px var(--primary), inset 0 0 5px var(--primary);
-}
-
-/* Botones de Estilo */
-.theme-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.theme-buttons button {
-    width: 30px; height: 30px; border: 2px solid #fff; cursor: pointer; border-radius: 4px;
-    transition: transform 0.2s;
-}
-.theme-buttons button:hover { transform: scale(1.2); box-shadow: 0 0 10px #fff; }
-
-/* Colores de botones */
-.btn-red { background: #ff0000; }
-.btn-blue { background: #0088ff; }
-.btn-green { background: #00ff44; }
-.btn-purple { background: #bc13fe; }
-.btn-gray { background: #eee; }
-.btn-orange { background: #ff8800; }
-.btn-cyan { background: #00ffff; }
-.btn-pink { background: #ff00ff; }
-
-/* --- CONTENIDO ADAPTABLE (BOTONES GRANDES) --- */
-.content-section {
-    flex: 1;
-    overflow-y: auto;
-    padding: 40px 20px;
-    background: radial-gradient(circle at center, #050505 0%, #000 100%);
-}
-
-.lista {
-    display: grid;
-    /* 4 columnas en PC, cada una de mínimo 300px */
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-    gap: 15px;
-    width: 100%;
-    max-width: 1800px;
-    margin: 0 auto;
-}
-
-.lista a {
-    text-decoration: none;
-    color: var(--primary);
-    font-size: 1.3rem;
-    padding: 35px 20px; /* Botones mucho más altos */
-    text-align: center;
-    border: 1px solid var(--dark-color);
-    background: var(--interface-gray);
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.lista a:hover {
-    color: #fff;
-    border-color: var(--primary);
-    background: var(--dark-color);
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 5px 25px var(--primary);
-    z-index: 5;
-}
-
-/* Efecto de brillo interno en los botones */
-.lista a::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-    transition: 0.4s;
-}
-.lista a:hover::after { left: 100%; }
-
-.hidden { display: none !important; }
-
-/* --- RESPONSIVE --- */
-@media (max-width: 1200px) {
-    .lista { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (max-width: 800px) {
-    .lista { grid-template-columns: repeat(2, 1fr); } /* 2 Líneas en celular */
-    .raid { font-size: 2.5rem; }
-    #buscador { width: 90%; font-size: 1rem; }
-    .header-section { padding: 25px 10px; }
-    .lista a { padding: 25px 10px; font-size: 1rem; }
-}
-
-/* --- ANIMACIONES --- */
-@keyframes scanline {
-    0% { top: -10%; }
-    100% { top: 110%; }
-}
-
-/* Scrollbar Industrial */
-.content-section::-webkit-scrollbar { width: 10px; }
-.content-section::-webkit-scrollbar-track { background: #000; }
-.content-section::-webkit-scrollbar-thumb {
-    background: var(--dark-color);
-    border: 1px solid var(--primary);
-}
-.content-section::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+/* --- EFECTO DE SONIDO (OPCIONAL - TIPO CLICK GHOST) --- */
+// Si quieres que los botones suenen, puedes añadir un audio pequeño aquí.
+links.forEach(link => {
+    link.addEventListener('mouseenter', () => {
+        // Aquí podrías poner un sonido de "beep" muy corto
+    });
+});
