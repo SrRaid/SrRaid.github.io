@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAID PROTOCOL | TERMINAL</title>
+    <title>RAID GHOST | TERMINAL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="red">
@@ -21,7 +21,7 @@
             <div class="controls">
                 <div class="search-wrapper">
                     <input type="text" id="buscador" placeholder="> ESCANEAR BASE DE DATOS..." autocomplete="off">
-                    <span id="result-count">TOTAL: 151</span>
+                    <span id="result-count">TOTAL: <span id="count">151</span></span>
                 </div>
 
                 <div class="theme-switcher">
@@ -30,7 +30,12 @@
                     <button onclick="setTheme('green')" class="btn-green" title="Infiltración"></button>
                     <button onclick="setTheme('purple')" class="btn-purple" title="Sobrecarga"></button>
                     <button onclick="setTheme('gray')" class="btn-gray" title="Modo Sigilo"></button>
+                    <button onclick="setTheme('orange')" class="btn-orange" title="Alerta Naranja"></button>
+                    <button onclick="setTheme('cyan')" class="btn-cyan" title="Núcleo Frío"></button>
+                    <button onclick="setTheme('pink')" class="btn-pink" title="Frecuencia Vulcano"></button>
                 </div>
+
+                <button id="fullscreen-btn" onclick="toggleFullScreen()">[ MOD_FULLSCREEN ]</button>
             </div>
 
             <div class="description">
@@ -229,5 +234,19 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Función extra para el botón de FullScreen
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.getElementById('fullscreen-btn').innerText = "[ EXIT_FULLSCREEN ]";
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    document.getElementById('fullscreen-btn').innerText = "[ MOD_FULLSCREEN ]";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
