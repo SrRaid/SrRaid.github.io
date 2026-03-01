@@ -7,8 +7,7 @@
     <link rel="shortcut icon" href="raid.png" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="overlay"></div>
+<body data-theme="red"> <div class="overlay"></div>
     <div class="scanline"></div>
 
     <div class="main-container">
@@ -16,13 +15,23 @@
             <div class="title-wrapper">
                 <h1 class="raid" data-text="Raid Truco">Raid <span>Truco</span></h1>
             </div>
+            
+            <div class="controls">
+                <input type="text" id="buscador" placeholder="BUSCAR EN EL PROTOCOLO..." autocomplete="off">
+                <div class="theme-buttons">
+                    <button onclick="setTheme('red')" class="btn-red" title="Ghost Red"></button>
+                    <button onclick="setTheme('blue')" class="btn-blue" title="Ghost Blue"></button>
+                    <button onclick="setTheme('green')" class="btn-green" title="Ghost Green"></button>
+                </div>
+            </div>
+
             <div class="description">
-                <p class="parr">:: PROTOCOLO SrRaid ACTIVO :: SELECCIONE ENTRADA ::</p>
+                <p class="parr">:: PROTOCOLO ACTIVO :: <span id="count">151</span> ENTRADAS DETECTADAS ::</p>
             </div>
         </header>
 
         <main class="content-section">
-            <div class="lista">
+            <div class="lista" id="listaH">
                 <a href="https://hentaila.com/hentai-overflow" target="_blank" rel="noopener">OverFlow</a>
                 <a href="https://hentaila.com/hentai-mankitsu-happening" target="_blank" rel="noopener">Mankitsu</a>
                 <a href="https://hentaila.com/hentai-gaki-ni-modotte-yarinaoshi" target="_blank" rel="noopener">GakiNi</a>
@@ -210,5 +219,7 @@
             </div>
         </main>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
