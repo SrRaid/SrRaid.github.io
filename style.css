@@ -17,7 +17,7 @@
     --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- VARIACIONES DE TEMA TOTAL (NUEVOS COLORES) --- */
+/* --- VARIACIONES DE TEMA TOTAL --- */
 body[data-theme="blue"]   { --primary: #0088ff; --dark-color: #002244; }
 body[data-theme="green"]  { --primary: #00ff44; --dark-color: #004411; }
 body[data-theme="purple"] { --primary: #bc13fe; --dark-color: #3a0055; }
@@ -83,15 +83,49 @@ body {
     box-shadow: 0 0 20px var(--dark-color);
 }
 
+/* NUEVO: Contenedor para Logo + Título */
+.title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.terminal-logo {
+    width: 70px; /* Tamaño del logo */
+    height: auto;
+    filter: drop-shadow(0 0 10px var(--primary));
+    transition: filter 0.3s ease;
+}
+
 .raid {
     font-size: 4.5rem;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 8px;
     text-shadow: 0 0 15px var(--primary), 3px 3px 0px var(--dark-color);
-    margin-bottom: 10px;
 }
 .raid span { color: var(--primary); }
+
+/* Animación de Parpadeo (Ghost Effect) */
+@keyframes ghost-flicker {
+    0%   { opacity: 1; }
+    2%   { opacity: 0.2; }
+    4%   { opacity: 1; }
+    15%  { opacity: 1; }
+    16%  { opacity: 0; }
+    17%  { opacity: 1; }
+    70%  { opacity: 1; }
+    71%  { opacity: 0.3; }
+    72%  { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+/* Aplicar parpadeo al logo y al título */
+.terminal-logo, .raid {
+    animation: ghost-flicker 6s infinite;
+}
 
 .controls {
     display: flex;
@@ -120,12 +154,12 @@ body {
 }
 
 /* Botones de Estilo */
-.theme-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.theme-buttons button {
+.theme-switcher { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.theme-switcher button {
     width: 30px; height: 30px; border: 2px solid #fff; cursor: pointer; border-radius: 4px;
     transition: transform 0.2s;
 }
-.theme-buttons button:hover { transform: scale(1.2); box-shadow: 0 0 10px #fff; }
+.theme-switcher button:hover { transform: scale(1.2); box-shadow: 0 0 10px #fff; }
 
 /* Colores de botones */
 .btn-red { background: #ff0000; }
@@ -137,7 +171,7 @@ body {
 .btn-cyan { background: #00ffff; }
 .btn-pink { background: #ff00ff; }
 
-/* --- CONTENIDO ADAPTABLE (BOTONES GRANDES) --- */
+/* --- CONTENIDO ADAPTABLE --- */
 .content-section {
     flex: 1;
     overflow-y: auto;
@@ -147,7 +181,6 @@ body {
 
 .lista {
     display: grid;
-    /* 4 columnas en PC, cada una de mínimo 300px */
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
     gap: 15px;
     width: 100%;
@@ -159,7 +192,7 @@ body {
     text-decoration: none;
     color: var(--primary);
     font-size: 1.3rem;
-    padding: 35px 20px; /* Botones mucho más altos */
+    padding: 35px 20px; 
     text-align: center;
     border: 1px solid var(--dark-color);
     background: var(--interface-gray);
@@ -180,7 +213,6 @@ body {
     z-index: 5;
 }
 
-/* Efecto de brillo interno en los botones */
 .lista a::after {
     content: '';
     position: absolute;
@@ -198,8 +230,9 @@ body {
 }
 
 @media (max-width: 800px) {
-    .lista { grid-template-columns: repeat(2, 1fr); } /* 2 Líneas en celular */
+    .lista { grid-template-columns: repeat(2, 1fr); } 
     .raid { font-size: 2.5rem; }
+    .terminal-logo { width: 40px; }
     #buscador { width: 90%; font-size: 1rem; }
     .header-section { padding: 25px 10px; }
     .lista a { padding: 25px 10px; font-size: 1rem; }
