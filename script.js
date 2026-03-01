@@ -12,7 +12,7 @@ const statusNames = {
 
 /* --- CAMBIADOR DE TEMAS TOTAL --- */
 function setTheme(color) {
-    // Aplicar el atributo al body (el CSS hará el resto)
+    // Aplicar el atributo al body (el CSS hará el resto con el logo y colores)
     document.body.setAttribute('data-theme', color);
     
     // Guardar preferencia en el navegador
@@ -22,23 +22,22 @@ function setTheme(color) {
     const statusText = document.getElementById('status-name');
     if (statusText) {
         statusText.innerText = statusNames[color] || "ACTIVO";
-        statusText.style.color = "var(--primary)";
     }
 
-    // Log de consola con estilo
+    // Log de consola con estilo (Opcional, se ve cool en F12)
     console.log(`%c [!] PROTOCOLO ${color.toUpperCase()} INICIADO `, `background: #222; color: ${getColorHex(color)}; font-weight: bold;`);
 }
 
-// Función auxiliar para los logs de consola
+// Función auxiliar para los colores de la consola
 function getColorHex(color) {
-    const colors = { red: '#ff0000', blue: '#0088ff', green: '#00ff44', purple: '#bc13fe', orange: '#ff8800', cyan: '#00ffff', pink: '#ff00ff' };
+    const colors = { red: '#ff0000', blue: '#0088ff', green: '#00ff44', purple: '#bc13fe', orange: '#ff8800', cyan: '#00ffff', pink: '#ff00ff', gray: '#ffffff' };
     return colors[color] || '#fff';
 }
 
 /* --- MOTOR DE BÚSQUEDA GHOST --- */
 const buscador = document.getElementById('buscador');
 const links = document.querySelectorAll('.lista a');
-const counter = document.getElementById('count'); // Asegúrate de tener <span id="count"></span> en tu HTML
+const counter = document.getElementById('count'); 
 
 if (buscador) {
     buscador.addEventListener('input', () => {
@@ -55,25 +54,30 @@ if (buscador) {
             }
         });
 
-        // Actualizar contador si existe
+        // Actualizar el número del contador en tiempo real
         if (counter) counter.innerText = visibleCount;
     });
 }
 
 /* --- CARGA INICIAL (PERSISTENCIA) --- */
-window.onload = () => {
+window.addEventListener('DOMContentLoaded', () => {
     // Recuperar el último tema usado o poner Rojo por defecto
     const savedTheme = localStorage.getItem('raid-ghost-theme') || 'red';
     setTheme(savedTheme);
     
-    // Si tienes un contador inicial, esto lo actualiza
-    if (counter) counter.innerText = links.length;
-};
+    // Inicializar el contador con el total de links
+    if (counter && links.length > 0) {
+        counter.innerText = links.length;
+    }
+});
 
-/* --- EFECTO DE SONIDO (OPCIONAL - TIPO CLICK GHOST) --- */
-// Si quieres que los botones suenen, puedes añadir un audio pequeño aquí.
+/* --- EFECTO VISUAL EXTRA (OPCIONAL) --- */
+// Añade un pequeño glitch visual al azar cuando pasas el mouse por los links
 links.forEach(link => {
     link.addEventListener('mouseenter', () => {
-        // Aquí podrías poner un sonido de "beep" muy corto
+        link.style.filter = "hue-rotate(90deg) brightness(1.5)";
+        setTimeout(() => {
+            link.style.filter = "none";
+        }, 100);
     });
 });
